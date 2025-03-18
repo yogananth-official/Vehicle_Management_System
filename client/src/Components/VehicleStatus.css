@@ -1,0 +1,194 @@
+/* VehicleStatus.css */
+
+:root {
+    --primary-bg: #3498db;
+    --secondary-bg: #2980b9;
+    --accent-color: #e74c3c;
+    --text-light: #ecf0f1;
+    --text-dark: #2c3e50;
+    --hover-color: #2574a9;
+    --card-bg: #ffffff;
+    --body-bg: #f5f7fa;
+    --table-header: #34495e;
+    --table-row-even: #f2f2f2;
+    --table-row-hover: #e8f4f8;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-dark);
+}
+
+.HeaderComponent {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    
+    background-color: var(--primary-bg);
+    border-bottom: solid 1px var(--secondary-bg);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.HeaderTitle {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.NavLinks {
+    display: flex;
+    margin-left: auto;
+    margin-right: 100px;
+}
+
+.NavLinks a {
+    color: var(--text-light);
+    margin-left: 20px;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.NavLinks a:hover {
+    background-color: var(--hover-color);
+}
+
+.SearchBar {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-bg);
+    border: solid 1px var(--text-light);
+    border-radius: 25px;
+    padding: 5px 20px;
+    margin-left: 50px;
+}
+
+.SearchBar input {
+    border: none;
+    font-size: 1rem;
+    background-color: transparent;
+    color: var(--text-light);
+    padding-left: 10px;
+    padding-right: 60px;
+    outline: none;
+    font-weight: lighter;
+    width: 100%;
+}
+
+.UserDetails {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: var(--secondary-bg);
+    padding: 10px 20px;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    color: var(--text-light);
+}
+
+.UserLogo {
+    margin-right: 15px;
+    font-size: 2rem;
+}
+
+.LogoutButton {
+    margin-left: auto;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.LogoutButton:hover {
+    color: var(--accent-color);
+}
+
+.ContentContainer {
+    margin: 20px auto;
+    width: 80%;
+}
+
+.RequestTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.RequestTable th,
+.RequestTable td {
+    border: 1px solid var(--secondary-bg);
+    padding: 12px;
+    text-align: left;
+}
+
+.RequestTable th {
+    background-color: var(--table-header);
+    color: var(--text-light);
+}
+
+.RequestTable tr:nth-child(even) {
+    background-color: var(--table-row-even);
+}
+
+.RequestTable tr:hover {
+    background-color: var(--table-row-hover);
+}
+
+@media (max-width: 768px) {
+    .HeaderComponent {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+    .NavLinks {
+        margin: 10px 0;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .SearchBar {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .UserDetails {
+        width: 95%;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .LogoutButton {
+        margin: 10px 0 0 0;
+    }
+
+    .ContentContainer {
+        width: 95%;
+    }
+
+    .RequestTable {
+        font-size: 0.9rem;
+    }
+
+    .RequestTable th,
+    .RequestTable td {
+        padding: 8px;
+    }
+}
