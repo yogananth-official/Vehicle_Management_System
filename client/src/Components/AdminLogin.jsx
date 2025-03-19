@@ -11,12 +11,12 @@ function AdminLogin() {
   const handleLogin = (event) => {
     event.preventDefault();
 
-    // Check credentials
+
     if (username === 'admin' && password === '12345678') {
-      setError(''); // Clear error message
-      navigate('/admin-dashboard'); // Navigate to Admin Dashboard on successful login
+      setError(''); 
+      navigate('/admin-dashboard'); 
     } else {
-      setError('Invalid username or password'); // Set error message
+      setError('Invalid username or password'); 
     }
   };
 
