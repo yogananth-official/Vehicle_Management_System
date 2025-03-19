@@ -74,10 +74,10 @@ function AdminDashboard() {
       <div className="requests-container">
         <h2>Staff Vehicle Requests:</h2>
         {requests.length > 0 ? (
-          requests.map((request) => (
+          requests.map((request, index) => (
             <div key={request._id} className="request-card">
               <div className="request-details">
-                <p><strong>ID:</strong> {request._id}</p>
+                <p><strong>ID:</strong> {index + 1}</p>  {/* Display Sequential ID */}
                 <p><strong>Purpose:</strong> {request.purpose}</p>
                 <p><strong>Vehicle Type:</strong> {request.vehicleType}</p>
                 <p><strong>From Date:</strong> {request.startDate.split('T')[0]}</p>

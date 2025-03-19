@@ -76,39 +76,41 @@ function VehicleStatus() {
       </div>
 
       <div className="ContentContainer">
-        <table className="RequestTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Vehicle Type</th>
-              <th>Purpose</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
-              <th>Comments</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.length > 0 ? (
-              requests.map((request, index) => (
-                <tr key={request._id}>
-                  <td>{index + 1}</td>
-                  <td>{request.vehicleType}</td>
-                  <td>{request.purpose}</td>
-                  <td>{new Date(request.startDate).toLocaleDateString()}</td>
-                  <td>{new Date(request.endDate).toLocaleDateString()}</td>
-                  <td>{request.status}</td>
-                  <td>{request.comments || "No Remarks"}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7">No requests found</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+  <table className="RequestTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Vehicle Type</th>
+        <th>Purpose</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+        <th>Comments</th>
+        <th>Remarks</th> {/* New column for Remarks */}
+      </tr>
+    </thead>
+    <tbody>
+      {requests.length > 0 ? (
+        requests.map((request, index) => (
+          <tr key={request._id}>
+            <td>{index + 1}</td>
+            <td>{request.vehicleType}</td>
+            <td>{request.purpose}</td>
+            <td>{new Date(request.startDate).toLocaleDateString()}</td>
+            <td>{new Date(request.endDate).toLocaleDateString()}</td>
+            <td>{request.status}</td>
+            <td>{request.comments || "No Comments"}</td>
+            <td>{request.remarks || "No Remarks"}</td> {/* New field for Remarks */}
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="8">No requests found</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
     </>
   );
 }
