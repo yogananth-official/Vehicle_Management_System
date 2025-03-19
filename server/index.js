@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const VehicleRequest = require('./models/VehicleRequest');
-const VehicleStatus = require('./models/VehicleStatus');
 
 const app = express();
 app.use(cors());
@@ -39,6 +38,49 @@ app.post('/submit-request', async (req, res) => {
         res.status(201).json({ message: "Request submitted successfully!" });
     } catch (error) {
         console.error("Error in /submit-request:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// Fetch all vehicle requests for the admin
+app.get('/vehicle-requests', async (req, res) => {
+    try {
+        const requests = await VehicleRequest.find();
+        res.status(200).json(requests);
+    } catch (error) {
+        console.error("Error fetching vehicle requests:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// Update vehicle request status (Accept/Reject)
+app.put('/update-request/:id', async (req, res) => {
+    try {
+        const { status, remarks } = req.body;
+        const requestId = req.params.id;
+
+        if (!["Accepted", "Rejected"].includes(status)) {
+            return res.status(400).json({ error: "Invalid status value" });
+        }
+
+        const updateData = { status };
+        if (status === "Rejected") {
+            updateData.remarks = remarks || "No remarks provided"; // Ensure remarks are stored
+        }
+
+        const updatedRequest = await VehicleRequest.findByIdAndUpdate(
+            requestId,
+            updateData,
+            { new: true }
+        );
+
+        if (!updatedRequest) {
+            return res.status(404).json({ error: "Request not found" });
+        }
+
+        res.status(200).json({ message: "Request updated successfully!", updatedRequest });
+    } catch (error) {
+        console.error("Error updating request:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });

@@ -7,8 +7,8 @@ const VehicleRequestSchema = new mongoose.Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     comments: { type: String },
-    status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default: 'Pending' },
-    remarks: { type: String }  // Added remarks field
+    status: { type: String, enum: ['Pending', 'Accepted', 'Rejected'], default: 'Pending' },
+    remarks: { type: String }  
 }, { collection: 'vehicle_requests' });
 
 const VehicleRequest = mongoose.model('VehicleRequest', VehicleRequestSchema);

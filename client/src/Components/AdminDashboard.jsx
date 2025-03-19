@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,6 @@ import axios from 'axios';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
-  const searchInputRef = useRef(null);
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
 
@@ -19,11 +18,9 @@ function AdminDashboard() {
         console.error('Error fetching vehicle requests:', error);
       }
     };
-
     fetchRequests();
   }, []);
 
-  // Approve request and update in backend
   const handleApprove = async (id) => {
     try {
       await axios.put(`http://localhost:3001/update-request/${id}`, { status: 'Accepted' });
@@ -37,10 +34,9 @@ function AdminDashboard() {
     }
   };
 
-  // Reject request with remarks and update in backend
   const handleReject = async (id) => {
     const remarks = prompt('Please enter your remarks for rejection:');
-    if (remarks) {
+    if (remarks !== null) {
       try {
         await axios.put(`http://localhost:3001/update-request/${id}`, { status: 'Rejected', remarks });
         setRequests((prevRequests) =>
@@ -66,7 +62,7 @@ function AdminDashboard() {
         <h1 className="header-title">Admin Dashboard</h1>
         <div className="search-bar">
           <FontAwesomeIcon icon={faMagnifyingGlass} />
-          <input ref={searchInputRef} type="text" placeholder="Press / to search" />
+          <input type="text" placeholder="Search requests..." />
         </div>
         <div className="user-profile">
           <FontAwesomeIcon icon={faUser} className="user-icon" />
@@ -84,18 +80,18 @@ function AdminDashboard() {
                 <p><strong>ID:</strong> {request._id}</p>
                 <p><strong>Purpose:</strong> {request.purpose}</p>
                 <p><strong>Vehicle Type:</strong> {request.vehicleType}</p>
-                <p><strong>From Date:</strong> {request.startDate}</p>
-                <p><strong>Return Date:</strong> {request.endDate}</p>
-                <p><strong>Status:</strong> {request.status || 'Pending'}</p>
-                {request.remarks && <p><strong>Remarks:</strong> {request.remarks}</p>}
+                <p><strong>From Date:</strong> {request.startDate.split('T')[0]}</p>
+                <p><strong>Return Date:</strong> {request.endDate.split('T')[0]}</p>
+                <p><strong>Status:</strong> {request.status}</p>
+                {request.status === 'Rejected' && <p><strong>Remarks:</strong> {request.remarks}</p>}
               </div>
               <div className="request-actions">
-                <button onClick={() => handleApprove(request._id)} disabled={request.status === 'Accepted'}>
-                  Accept
-                </button>
-                <button onClick={() => handleReject(request._id)} disabled={request.status === 'Rejected'}>
-                  Reject
-                </button>
+                {request.status === 'Pending' && (
+                  <>
+                    <button onClick={() => handleApprove(request._id)}>Accept</button>
+                    <button onClick={() => handleReject(request._id)}>Reject</button>
+                  </>
+                )}
               </div>
             </div>
           ))
