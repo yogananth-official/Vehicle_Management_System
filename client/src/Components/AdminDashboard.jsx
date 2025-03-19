@@ -2,80 +2,60 @@ import React, { useRef, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
-
-  // State to hold requests
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      facultyName: 'Dr. Smith',
-      purpose: 'Field Research',
-      cityName: 'City A',
-      vehicleType: 'Bus',
-      memberCount: 10,
-      startDate: '01-10-2024',
-      endDate: '05-10-2024',
-      status: 'Pending',
-      remarks: '',
-    },
-    {
-      id: 2,
-      facultyName: 'Prof. Johnson',
-      purpose: 'Conference',
-      cityName: 'City B',
-      vehicleType: 'Car',
-      memberCount: 5,
-      startDate: '10-10-2024',
-      endDate: '12-10-2024',
-      status: 'Pending',
-      remarks: '',
-    },
-  ]);
+  const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === '/') {
-        event.preventDefault();
-        if (searchInputRef.current) {
-          searchInputRef.current.focus();
-        }
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/vehicle-requests');
+        setRequests(response.data);
+      } catch (error) {
+        console.error('Error fetching vehicle requests:', error);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    fetchRequests();
   }, []);
 
-  const handleApprove = (id) => {
-    // Update the status of the request to 'Accepted'
-    setRequests((prevRequests) =>
-      prevRequests.map((request) =>
-        request.id === id ? { ...request, status: 'Accepted' } : request
-      )
-    );
-  };
-
-  const handleReject = (id) => {
-    const remarks = prompt('Please enter your remarks for rejection:');
-    if (remarks) {
-      // Update the request with the rejection status and remarks
+  // Approve request and update in backend
+  const handleApprove = async (id) => {
+    try {
+      await axios.put(`http://localhost:3001/update-request/${id}`, { status: 'Accepted' });
       setRequests((prevRequests) =>
         prevRequests.map((request) =>
-          request.id === id ? { ...request, status: 'Rejected', remarks } : request
+          request._id === id ? { ...request, status: 'Accepted' } : request
         )
       );
+    } catch (error) {
+      console.error('Error approving request:', error);
+    }
+  };
+
+  // Reject request with remarks and update in backend
+  const handleReject = async (id) => {
+    const remarks = prompt('Please enter your remarks for rejection:');
+    if (remarks) {
+      try {
+        await axios.put(`http://localhost:3001/update-request/${id}`, { status: 'Rejected', remarks });
+        setRequests((prevRequests) =>
+          prevRequests.map((request) =>
+            request._id === id ? { ...request, status: 'Rejected', remarks } : request
+          )
+        );
+      } catch (error) {
+        console.error('Error rejecting request:', error);
+      }
     }
   };
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
+    if (window.confirm("Are you sure you want to log out?")) {
       navigate('/');
     }
   };
@@ -99,24 +79,21 @@ function AdminDashboard() {
         <h2>Staff Vehicle Requests:</h2>
         {requests.length > 0 ? (
           requests.map((request) => (
-            <div key={request.id} className="request-card">
+            <div key={request._id} className="request-card">
               <div className="request-details">
-                <p><strong>ID:</strong> {request.id}</p>
-                <p><strong>Faculty Name:</strong> {request.facultyName}</p>
+                <p><strong>ID:</strong> {request._id}</p>
                 <p><strong>Purpose:</strong> {request.purpose}</p>
-                <p><strong>City Name:</strong> {request.cityName}</p>
-                <p><strong>Type of Car/Bus:</strong> {request.vehicleType}</p>
-                <p><strong>Member Count:</strong> {request.memberCount}</p>
+                <p><strong>Vehicle Type:</strong> {request.vehicleType}</p>
                 <p><strong>From Date:</strong> {request.startDate}</p>
                 <p><strong>Return Date:</strong> {request.endDate}</p>
-                <p><strong>Status:</strong> {request.status}</p>
+                <p><strong>Status:</strong> {request.status || 'Pending'}</p>
                 {request.remarks && <p><strong>Remarks:</strong> {request.remarks}</p>}
               </div>
               <div className="request-actions">
-                <button onClick={() => handleApprove(request.id)} disabled={request.status !== 'Pending'}>
+                <button onClick={() => handleApprove(request._id)} disabled={request.status === 'Accepted'}>
                   Accept
                 </button>
-                <button onClick={() => handleReject(request.id)} disabled={request.status !== 'Pending'}>
+                <button onClick={() => handleReject(request._id)} disabled={request.status === 'Rejected'}>
                   Reject
                 </button>
               </div>

@@ -1,12 +1,28 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';  // Import axios for API requests
 import './VehicleStatus.css';
 
 function VehicleStatus() {
   const searchInputRef = useRef(null);
   const navigate = useNavigate();
+  const [requests, setRequests] = useState([]);  // Store vehicle requests
+
+  // Fetch vehicle requests from backend
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/vehicle-requests'); // Adjust port if needed
+        setRequests(response.data);
+      } catch (error) {
+        console.error("Error fetching vehicle requests:", error);
+      }
+    };
+    
+    fetchRequests();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -28,37 +44,9 @@ function VehicleStatus() {
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     if (confirmLogout) {
-      navigate('/'); 
+      navigate('/');
     }
   };
-
-
-  const requests = [
-    {
-      id: 1,
-      facultyName: 'Dr. Sathyamurthi',
-      purpose: 'Field Research',
-      cityName: 'Sathy',
-      carType: 'Bus',
-      memberCount: 10,
-      fromDate: '01-10-2024',
-      returnDate: '05-10-2024',
-      status: 'Accepted',
-      remarks: 'All details are correct.',
-    },
-    {
-      id: 2,
-      facultyName: 'Prof. Jayaraj',
-      purpose: 'Conference',
-      cityName: 'Erode',
-      carType: 'Car',
-      memberCount: 5,
-      fromDate: '10-10-2024',
-      returnDate: '12-10-2024',
-      status: 'Rejected',
-      remarks: 'Insufficient member count.',
-    },
-  ];
 
   return (
     <>
@@ -92,32 +80,32 @@ function VehicleStatus() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Faculty Name</th>
+              <th>Vehicle Type</th>
               <th>Purpose</th>
-              <th>City Name</th>
-              <th>Type of Car/Bus</th>
-              <th>Member Count</th>
-              <th>From Date</th>
-              <th>Return Date</th>
+              <th>Start Date</th>
+              <th>End Date</th>
               <th>Status</th>
-              <th>Remarks</th>
+              <th>Comments</th>
             </tr>
           </thead>
           <tbody>
-            {requests.map((request) => (
-              <tr key={request.id}>
-                <td>{request.id}</td>
-                <td>{request.facultyName}</td>
-                <td>{request.purpose}</td>
-                <td>{request.cityName}</td>
-                <td>{request.carType}</td>
-                <td>{request.memberCount}</td>
-                <td>{request.fromDate}</td>
-                <td>{request.returnDate}</td>
-                <td>{request.status}</td>
-                <td>{request.remarks}</td>
+            {requests.length > 0 ? (
+              requests.map((request, index) => (
+                <tr key={request._id}>
+                  <td>{index + 1}</td>
+                  <td>{request.vehicleType}</td>
+                  <td>{request.purpose}</td>
+                  <td>{new Date(request.startDate).toLocaleDateString()}</td>
+                  <td>{new Date(request.endDate).toLocaleDateString()}</td>
+                  <td>{request.status}</td>
+                  <td>{request.comments || "No Remarks"}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">No requests found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
